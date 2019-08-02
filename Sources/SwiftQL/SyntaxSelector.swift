@@ -26,4 +26,7 @@ extension SyntaxSelector {
     public static var string: SyntaxSelector<StringSegmentSyntax> {
         return .init { $0.firstSearchingDown(of: StringSegmentSyntax.self) }
     }
+    public static var function: SyntaxSelector<FunctionDeclSyntax> {
+        return .init { $0.firstSearchingDown(of: FunctionDeclSyntax.self) }
+    }
 }

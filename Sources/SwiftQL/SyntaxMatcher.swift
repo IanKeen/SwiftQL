@@ -12,9 +12,14 @@ public struct SyntaxMatcher {
     }
 }
 
-
 extension SyntaxMatcher {
     public static var expressions: SyntaxMatcher {
         return .init(matches: { $0 is ExprListSyntax })
+    }
+    public static var classes: SyntaxMatcher {
+        return .init(matches: { $0 is ClassDeclSyntax })
+    }
+    public static var functions: SyntaxMatcher {
+        return .init(matches: { $0 is FunctionDeclSyntax })
     }
 }
