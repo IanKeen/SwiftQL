@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 public struct SyntaxSelector<T> {
-    public let select: (Syntax) -> T?
+    let select: (Syntax) -> T?
 
     public init(select: @escaping (Syntax) -> T?) {
         self.select = select
@@ -28,5 +28,11 @@ extension SyntaxSelector {
     }
     public static var function: SyntaxSelector<FunctionDeclSyntax> {
         return .init { $0.firstSearchingDown(of: FunctionDeclSyntax.self) }
+    }
+    public static var `protocol`: SyntaxSelector<ProtocolDeclSyntax> {
+        return .init { $0.firstSearchingDown(of: ProtocolDeclSyntax.self) }
+    }
+    public static var `inheritance`: SyntaxSelector<TypeInheritanceClauseSyntax> {
+        return .init { $0.firstSearchingDown(of: TypeInheritanceClauseSyntax.self) }
     }
 }

@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 public struct SyntaxCondition {
-    public let predicate: (Syntax) -> Bool
+    let predicate: (Syntax) -> Bool
 
     public init(predicate: @escaping (Syntax) -> Bool) {
         self.predicate = predicate
@@ -18,7 +18,6 @@ public struct SyntaxCondition {
 extension SyntaxCondition {
     public static var all: SyntaxCondition { return .init { _ in true } }
 }
-
 
 extension SyntaxCondition {
     public static var `private`: SyntaxCondition {
