@@ -3,16 +3,12 @@ import Foundation
 
 public class SwiftQL {
     private class Visitor: SyntaxVisitor {
-        var matches: [Syntax] = []
-        let matcher: SyntaxMatcher
+        typealias NodeProcessor = (Syntax) -> Void
 
-        init(matcher: SyntaxMatcher) {
-            self.matcher = matcher
-        }
-
+        var processors: [NodeProcessor] = []
+        
         override func visitPre(_ node: Syntax) {
-            guard matcher.matches(node) else { return }
-            matches.append(node)
+            processors.forEach { $0(node) }
         }
     }
 
@@ -24,11 +20,24 @@ public class SwiftQL {
         print("WRITING TO: ", url.absoluteString)
         self.sourceFile = try SyntaxTreeParser.parse(url)
     }
+}
 
-    public func query<T>(find matcher: SyntaxMatcher, where condition: SyntaxCondition = .all, selecting selector: SyntaxSelector<T>, complete: ([T]) -> Void) {
-        let completeMatcher = SyntaxMatcher { matcher.matches($0) && condition.predicate($0) }
-        let visitor = Visitor(matcher: completeMatcher)
+extension SwiftQL {
+    public func execute<A>(_ a: SyntaxQuery<A>) -> [A] {
+        let visitor = Visitor()
+        visitor.processors.append(a.process)
         sourceFile.walk(visitor)
-        complete(visitor.matches.compactMap(selector.select))
+        return a.matches.compactMap(a.selector.select)
+    }
+    public func execute<A, B>(_ a: SyntaxQuery<A>, _ b: SyntaxQuery<B>) -> ([A], [B]) {
+        let visitor = Visitor()
+        visitor.processors.append(contentsOf: [
+            a.process, b.process
+        ])
+        sourceFile.walk(visitor)
+        return (
+            a.matches.compactMap(a.selector.select),
+            b.matches.compactMap(b.selector.select)
+        )
     }
 }
