@@ -40,4 +40,29 @@ extension SwiftQL {
             b.matches.compactMap(b.selector.select)
         )
     }
+    public func execute<A, B, C>(_ a: SyntaxQuery<A>, _ b: SyntaxQuery<B>, _ c: SyntaxQuery<C>) -> ([A], [B], [C]) {
+        let visitor = Visitor()
+        visitor.processors.append(contentsOf: [
+            a.process, b.process, c.process
+        ])
+        sourceFile.walk(visitor)
+        return (
+            a.matches.compactMap(a.selector.select),
+            b.matches.compactMap(b.selector.select),
+            c.matches.compactMap(c.selector.select)
+        )
+    }
+    public func execute<A, B, C, D>(_ a: SyntaxQuery<A>, _ b: SyntaxQuery<B>, _ c: SyntaxQuery<C>, _ d: SyntaxQuery<D>) -> ([A], [B], [C], [D]) {
+        let visitor = Visitor()
+        visitor.processors.append(contentsOf: [
+            a.process, b.process, c.process, d.process
+        ])
+        sourceFile.walk(visitor)
+        return (
+            a.matches.compactMap(a.selector.select),
+            b.matches.compactMap(b.selector.select),
+            c.matches.compactMap(c.selector.select),
+            d.matches.compactMap(d.selector.select)
+        )
+    }
 }
