@@ -16,7 +16,13 @@ public struct SyntaxCondition {
 }
 
 extension SyntaxCondition {
-    public static var all: SyntaxCondition { return .init { _ in true } }
+    public static var all: SyntaxCondition {
+        return .init { _ in true }
+    }
+
+    public static func excluding<T>(_: T.Type) -> SyntaxCondition {
+        return .init { !($0 is T) }
+    }
 }
 
 extension SyntaxCondition {

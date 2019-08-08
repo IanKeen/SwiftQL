@@ -7,7 +7,7 @@ public struct SyntaxSelector<T> {
         self.select = select
     }
 
-    public static func +<U: Syntax>(lhs: SyntaxSelector, rhs: SyntaxSelector<U>) -> SyntaxSelector<(T, U)> {
+    public static func +<U>(lhs: SyntaxSelector, rhs: SyntaxSelector<U>) -> SyntaxSelector<(T, U)> {
         return .init { syntax in
             guard
                 let left = lhs.select(syntax),
@@ -23,6 +23,12 @@ extension SyntaxSelector {
     public static var `class`: SyntaxSelector<ClassDeclSyntax> {
         return .init { $0.firstSearchingUp(of: ClassDeclSyntax.self) }
     }
+    public static var `struct`: SyntaxSelector<StructDeclSyntax> {
+        return .init { $0.firstSearchingUp(of: StructDeclSyntax.self) }
+    }
+    public static var `enum`: SyntaxSelector<EnumDeclSyntax> {
+        return .init { $0.firstSearchingUp(of: EnumDeclSyntax.self) }
+    }
     public static var string: SyntaxSelector<StringSegmentSyntax> {
         return .init { $0.firstSearchingDown(of: StringSegmentSyntax.self) }
     }
@@ -34,5 +40,8 @@ extension SyntaxSelector {
     }
     public static var `inheritance`: SyntaxSelector<TypeInheritanceClauseSyntax> {
         return .init { $0.firstSearchingDown(of: TypeInheritanceClauseSyntax.self) }
+    }
+    public static var identifier: SyntaxSelector<TokenSyntax> {
+        return .init { $0.firstSearchingDown(of: TokenSyntax.self, where: { $0.tokenKind.isIdentifier }) }
     }
 }

@@ -16,6 +16,9 @@ public struct SyntaxMatcher {
 }
 
 extension SyntaxMatcher {
+    public static var declaration: SyntaxMatcher {
+        return .init(matches: { $0 is DeclSyntax })
+    }
     public static var expressions: SyntaxMatcher {
         return .init(matches: { $0 is ExprListSyntax })
     }
